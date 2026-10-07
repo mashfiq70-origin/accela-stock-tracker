@@ -115,6 +115,38 @@ table.st tr.tot td{background:var(--brand-soft);font-weight:800}
 .mail th{background:#8eaadb;color:#111;border:1px solid #fff;padding:6px 14px;font-family:"Times New Roman",serif}
 .mail td{border:1px solid #bbb;padding:6px 14px;text-align:center;font-family:"Times New Roman",serif}
 
+/* production plan */
+.ppline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fbf4ee;border:1px solid #efd9c8;color:#6b3a14;border-radius:10px;padding:8px 12px;font-size:13px;margin-bottom:12px}
+.ppline b{color:#4a2508}
+.ppline.none{background:var(--grey-bg);border-color:var(--line);color:var(--muted)}
+table.pp{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:960px}
+table.pp th{font-size:11px;padding:8px 8px;text-align:right;border-bottom:1px solid var(--line);background:#f7faf8;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+table.pp th.l,table.pp td.l{text-align:left}
+table.pp th.mo{background:#843c0c;color:#fff;text-align:center;font-size:13px;letter-spacing:.04em;border-left:2px solid #fff}
+table.pp th.sub{background:#fbf4ee;color:#6b3a14}
+table.pp th.sub.first,table.pp td.first{border-left:2px solid #efd9c8}
+table.pp td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right}
+table.pp tr:last-child td{border-bottom:0}
+table.pp td.code{font-weight:700}
+table.pp td:nth-child(2){min-width:190px}
+#v-plan{max-width:1240px}
+table.pp{font-size:14px}
+table.pp td.nip{text-align:center;color:var(--muted);font-style:italic;background:#fafbfa}
+.urg{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.urg.u{background:var(--red-bg);color:var(--red)} .urg.n{background:var(--green-bg);color:var(--green)} .urg.x{background:var(--grey-bg);color:var(--muted)}
+.zero{color:#a3b0a8}
+.ppcards{display:none}
+.ppc{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}
+.ppc .h{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.ppc .h b{font-size:14px}
+.ppc .meta{font-size:12px;color:var(--muted);margin:2px 0 10px}
+.ppc .mos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ppc .mo{background:#fbf4ee;border-radius:10px;padding:8px 10px}
+.ppc .mo small{display:block;font-size:11px;font-weight:700;color:#843c0c;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.ppc .mo .q{font-size:18px;font-weight:800}
+.ppc .mo .d{font-size:12px;color:var(--muted);margin:2px 0 6px}
+@media (max-width:700px){ .pptablebox{display:none} .ppcards{display:block} }
+
 /* admin */
 .drop{border:2px dashed #b8cfc2;border-radius:14px;padding:28px 16px;text-align:center;background:#fafdfb;cursor:pointer}
 .drop.over{border-color:var(--brand);background:var(--brand-soft)}
@@ -208,9 +240,9 @@ footer{padding:20px 0 30px;color:var(--muted);font-size:12px;text-align:center}
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
         <b>Daily Stock Tracker</b><span>Depot-wise stock by SKU + IDTA assistant</span>
       </button>
-      <div class="tile soon"><span class="badge">Coming soon</span>
+      <button class="tile" id="tile-plan">
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
-        <b>Production Plan</b><span>Upcoming production schedule</span></div>
+        <b>Production Plan</b><span id="tile-plan-sub">Planned production this month and next</span></button>
       <div class="tile soon"><span class="badge">Coming soon</span>
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></div>
         <b>Shipment Update</b><span>Status of shipments to depots</span></div>
@@ -253,14 +285,27 @@ footer{padding:20px 0 30px;color:var(--muted);font-size:12px;text-align:center}
     </div>
   </main>
 
+  <!-- PRODUCTION PLAN -->
+  <main id="v-plan" class="wrap hidden">
+    <div class="pagehead"><div><h1>Production Plan</h1><div class="muted small">Planned production for this month and next, for Accela's local SKUs.</div></div></div>
+    <div class="info" id="pp-info"></div>
+    <div class="filters">
+      <div><label class="f" for="pp-pm">Product manager</label><select id="pp-pm"></select></div>
+      <div><label class="f" for="pp-brand">Brand</label><select id="pp-brand"></select></div>
+      <div><label class="f" for="pp-sku">SKU</label><select id="pp-sku"></select></div>
+    </div>
+    <div class="card" id="pp-report"></div>
+    <div style="height:30px"></div>
+  </main>
+
   <!-- ADMIN -->
   <main id="v-admin" class="wrap hidden">
     <div class="pagehead"><div><h1>Upload Center</h1><div class="muted small">Upload the morning stock report. Everyone sees the new numbers about a minute after you publish.</div></div></div>
     <div class="card">
       <div class="drop" id="drop">
         <input type="file" id="file" accept=".xlsx,.xls,.xlsm" class="hidden">
-        <div style="font-weight:700;font-size:16px">Drop the stock report Excel here</div>
-        <div class="muted small">or tap to choose the file</div>
+        <div style="font-weight:700;font-size:16px">Drop the stock report or production plan Excel here</div>
+        <div class="muted small">or tap to choose the file — the portal recognises which one it is</div>
       </div>
       <div id="parse-out"></div>
     </div>
@@ -290,6 +335,7 @@ footer{padding:20px 0 30px;color:var(--muted);font-size:12px;text-align:center}
    ===================================================================== */
 const CONFIG = {
   dataPath: 'data/stock.enc',
+  planPath: 'data/plan.enc',
   // Encrypted copy of the team password, unlocked by the admin password.
   adminVault: {"v":1,"iter":200000,"salt":"MvA5ZBkiTM5999lgMY0OKA==","iv":"sNRvyLl1ZZv4tkKy","ct":"+Umj+qilsXHSC4KH/XrJcIigbLJvOH0Hx0yFLdyL0Zg="},
   // Depots in the report that should NOT be shown
@@ -349,15 +395,16 @@ async function decryptText(pw, box){
    State
    ===================================================================== */
 let DATA = null;          // decrypted report
+let PLAN = null;          // decrypted production plan (optional)
 let TEAM_PW = null;       // team password (in memory)
 let ADMIN_OK = false;
 let PENDING = null;       // parsed upload waiting to be published
 
 function show(id){
   ['v-login','v-alogin'].forEach(v => $('#'+v).classList.toggle('hidden', v!==id));
-  const inShell = ['v-home','v-stock','v-admin'].includes(id);
+  const inShell = ['v-home','v-stock','v-plan','v-admin'].includes(id);
   $('#shell').classList.toggle('hidden', !inShell);
-  ['v-home','v-stock','v-admin'].forEach(v => $('#'+v).classList.toggle('hidden', v!==id));
+  ['v-home','v-stock','v-plan','v-admin'].forEach(v => $('#'+v).classList.toggle('hidden', v!==id));
   $('#btn-logout').classList.toggle('hidden', !TEAM_PW);
   window.scrollTo(0,0);
 }
@@ -375,6 +422,11 @@ async function unlock(pw){
   const txt = await decryptText(pw, box);   // throws on wrong password
   DATA = JSON.parse(txt);
   TEAM_PW = pw;
+  PLAN = null;
+  try {
+    const r = await fetch(CONFIG.planPath + '?t=' + Date.now(), {cache:'no-store'});
+    if (r.ok) PLAN = JSON.parse(await decryptText(pw, await r.json()));
+  } catch(e) { PLAN = null; }
 }
 
 $('#f-login').addEventListener('submit', async e => {
@@ -385,10 +437,11 @@ $('#f-login').addEventListener('submit', async e => {
 });
 $('#to-admin-login').onclick = () => { show('v-alogin'); $('#apw').focus(); };
 $('#back-login').onclick = () => TEAM_PW ? goHome() : show('v-login');
-$('#btn-logout').onclick = () => { sstore.del('ast_pw'); TEAM_PW=null; DATA=null; ADMIN_OK=false; $('#pw').value=''; show('v-login'); };
+$('#btn-logout').onclick = () => { sstore.del('ast_pw'); TEAM_PW=null; DATA=null; PLAN=null; ADMIN_OK=false; $('#pw').value=''; show('v-login'); };
 $('#go-home').onclick = () => goHome();
 $('#btn-admin').onclick = () => ADMIN_OK ? openAdmin() : (show('v-alogin'), $('#apw').focus());
 $('#tile-stock').onclick = () => openStock();
+$('#tile-plan').onclick = () => openPlan();
 
 $('#f-alogin').addEventListener('submit', async e => {
   e.preventDefault();
@@ -406,7 +459,8 @@ $('#f-alogin').addEventListener('submit', async e => {
    HOME
    ===================================================================== */
 function goHome(){
-  $('#home-stamp').textContent = DATA ? ('Latest report: ' + DATA.meta.reportDate + '  ·  ' + DATA.skus.length + ' Accela SKUs') : 'No report published yet';
+  $('#home-stamp').textContent = DATA ? ('Latest report: ' + DATA.meta.reportDate + '  ·  ' + DATA.skus.length + ' Accela SKUs' + (PLAN ? '  ·  Production plan: ' + PLAN.meta.m1 : '')) : 'No report published yet';
+  $('#tile-plan-sub').textContent = PLAN ? (PLAN.meta.m1 + ' & ' + PLAN.meta.m2 + ' plan') : 'No plan uploaded yet';
   show('v-home');
 }
 
@@ -490,6 +544,7 @@ function renderReport(){
   $('#report').innerHTML = `
     <div class="skuhead"><span class="code">${esc(s.code)}</span><span class="name">${esc(s.name)}</span>
       ${s.hist ? `<span class="chip r">${counts.r} low</span><span class="chip y">${counts.y} attention</span><span class="chip g">${counts.g} adequate</span>` : '<span class="chip n">New SKU · stock only</span>'}</div>
+    ${planLine(s.code)}
     ${s.hist ? '' : '<div class="note">This SKU has no last-month sales yet, so only stock and current-month sales are shown.</div>'}
     <div class="tablebox"><table class="st">
       <thead><tr><th><span class="t-lg">Depot initial</span><span class="t-sm">Depot</span></th><th class="dname">Depot name</th><th>Stock</th><th><span class="t-lg">Sales current month</span><span class="t-sm">Sales MTD</span></th><th><span class="t-lg">Sales last month</span><span class="t-sm">Last mo.</span></th><th><span class="t-lg">Probable shortage / excess</span><span class="t-sm">Short / excess</span></th><th><span class="t-lg">Remarks</span><span class="t-sm"></span></th></tr></thead>
@@ -595,6 +650,127 @@ $('#id-copy').onclick = async () => {
   $('#id-copy').textContent = 'Copied ✓'; setTimeout(()=>$('#id-copy').textContent='Copy mail', 1800);
 };
 
+
+/* =====================================================================
+   PRODUCTION PLAN
+   ===================================================================== */
+const URG = u => { const k = String(u||'').toUpperCase(); return k.startsWith('URGENT') ? ['u','Urgent'] : k.startsWith('NORMAL') ? ['n','Normal'] : ['x','N.A.']; };
+const fmtCov = c => (c===null||c===undefined||c==='') ? '–' : Number(c).toFixed(2);
+const batches = n => n + (n===1 ? ' batch' : ' batches');
+function planLine(code){
+  if (!PLAN) return '';
+  const r = PLAN.rows[code];
+  if (!r) return '<div class="ppline none">Not in Production Plan</div>';
+  const part = (lbl, q, b) => `<span>${esc(lbl)}: ${q ? `<b>${fmt(q)}</b> (${batches(b||0)})` : 'none planned'}</span>`;
+  return `<div class="ppline"><b>Production plan</b>${part(PLAN.meta.m1, r.q1, r.b1)}<span>·</span>${part(PLAN.meta.m2, r.q2, r.b2)}</div>`;
+}
+function openPlan(){
+  if (!DATA){ goHome(); return; }
+  if (!PLAN){
+    $('#pp-info').innerHTML = '';
+    $('#pp-report').innerHTML = '<div class="empty">No production plan has been uploaded yet.</div>';
+    ['#pp-pm','#pp-brand','#pp-sku'].forEach(x=>$(x).innerHTML='');
+    show('v-plan'); return;
+  }
+  const m = PLAN.meta;
+  $('#pp-info').innerHTML = `
+    <div><small>Plan</small><b>${esc(m.title||'')}</b></div>
+    <div><small>Current month (M01)</small><b>${esc(m.m1)}</b></div>
+    <div><small>Next month (M02)</small><b>${esc(m.m2)}</b></div>
+    <div><small>Uploaded</small><b>${esc(new Date(m.uploadedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}))}</b></div>`;
+  const pms = DATA.pms.map(p=>p.pm);
+  $('#pp-pm').innerHTML = '<option value="">All product managers</option>' + pms.map(p=>`<option>${esc(p)}</option>`).join('');
+  const saved = store.get('ast_pm'); if (saved && pms.includes(saved)) $('#pp-pm').value = saved;
+  ppBrands(); show('v-plan');
+}
+function ppBrands(){
+  const brands = [...new Set(skusFor($('#pp-pm').value,'').map(s=>s.brand))].sort();
+  $('#pp-brand').innerHTML = '<option value="">All brands</option>' + brands.map(b=>`<option>${esc(b)}</option>`).join('');
+  ppSkus();
+}
+function ppSkus(){
+  const list = skusFor($('#pp-pm').value, $('#pp-brand').value);
+  $('#pp-sku').innerHTML = '<option value="">All SKUs (' + list.length + ')</option>' + list.map(s=>`<option value="${esc(s.code)}">${esc(s.name)}</option>`).join('');
+  renderPlan();
+}
+$('#pp-pm').onchange = () => { store.set('ast_pm', $('#pp-pm').value); ppBrands(); };
+$('#pp-brand').onchange = ppSkus;
+$('#pp-sku').onchange = renderPlan;
+function renderPlan(){
+  const m = PLAN.meta, code = $('#pp-sku').value;
+  let list = skusFor($('#pp-pm').value, $('#pp-brand').value);
+  if (code) list = list.filter(s=>s.code===code);
+  const rows = list.map(s=>({s, r:PLAN.rows[s.code]}));
+  const n1 = rows.filter(o=>o.r && o.r.q1>0).length, n2 = rows.filter(o=>o.r && o.r.q2>0).length;
+  const nu = rows.filter(o=>o.r && (URG(o.r.u1)[0]==='u' || URG(o.r.u2)[0]==='u')).length;
+  const nip = rows.filter(o=>!o.r).length;
+  const qcell = (q,first) => `<td class="${first?'first':''} ${q?'':'zero'}">${fmt(q||0)}</td>`;
+  const ucell = u => { const [c,t]=URG(u); return `<td><span class="urg ${c}">${t}</span></td>`; };
+  const trs = rows.map(({s,r}) => r
+    ? `<tr><td class="l code">${esc(s.code)}</td><td class="l">${esc(s.name)}</td><td class="l">${esc(s.brand)}</td><td>${fmt(r.batch)}</td>
+        ${qcell(r.q1,true)}<td class="${r.b1?'':'zero'}">${fmt(r.b1||0)}</td><td>${fmtCov(r.c1)}</td>${ucell(r.u1)}
+        ${qcell(r.q2,true)}<td class="${r.b2?'':'zero'}">${fmt(r.b2||0)}</td><td>${fmtCov(r.c2)}</td>${ucell(r.u2)}</tr>`
+    : `<tr><td class="l code">${esc(s.code)}</td><td class="l">${esc(s.name)}</td><td class="l">${esc(s.brand)}</td><td class="nip" colspan="9">Not in Production Plan</td></tr>`).join('');
+  const cards = rows.map(({s,r}) => {
+    const mo = (lbl,q,b,c,u) => { const [uc,ut]=URG(u); return `<div class="mo"><small>${esc(lbl)}</small><div class="q ${q?'':'zero'}">${fmt(q||0)}</div><div class="d">${batches(b||0)} · ${fmtCov(c)} mo cover</div><span class="urg ${uc}">${ut}</span></div>`; };
+    return `<div class="ppc"><div class="h"><span class="code" style="background:var(--grey-bg);border-radius:6px;padding:1px 7px;font-weight:700;font-size:12px">${esc(s.code)}</span><b>${esc(s.name)}</b></div>
+      <div class="meta">${esc(s.brand)}${r ? ' · Batch size ' + fmt(r.batch) : ''}</div>
+      ${r ? `<div class="mos">${mo(m.m1,r.q1,r.b1,r.c1,r.u1)}${mo(m.m2,r.q2,r.b2,r.c2,r.u2)}</div>` : '<div class="ppline none" style="margin:0">Not in Production Plan</div>'}</div>`;
+  }).join('');
+  $('#pp-report').innerHTML = `
+    <div class="skuhead"><span class="chip g">${esc(m.m1)}: ${n1} SKU${n1===1?'':'s'} planned</span><span class="chip g">${esc(m.m2)}: ${n2} planned</span>
+      ${nu?`<span class="chip r">${nu} urgent</span>`:''}${nip?`<span class="chip n">${nip} not in plan</span>`:''}</div>
+    ${rows.length ? `<div class="tablebox pptablebox"><table class="pp">
+      <thead><tr><th class="l" rowspan="2">Code</th><th class="l" rowspan="2">SKU</th><th class="l" rowspan="2">Brand</th><th rowspan="2">Batch size</th>
+        <th class="mo" colspan="4">${esc(m.m1)}</th><th class="mo" colspan="4">${esc(m.m2)}</th></tr>
+        <tr><th class="sub first">Planned qty</th><th class="sub">Batch</th><th class="sub">Cover (mo)</th><th class="sub">Urgency</th>
+            <th class="sub first">Planned qty</th><th class="sub">Batch</th><th class="sub">Cover (mo)</th><th class="sub">Urgency</th></tr></thead>
+      <tbody>${trs}</tbody></table></div>
+      <div class="ppcards">${cards}</div>
+      <div class="legend"><span>Coverage = months of stock expected after this production (from the plan)</span></div>` : '<div class="empty">No SKUs for this selection.</div>'}`;
+}
+
+/* =====================================================================
+   ADMIN — parse the production plan
+   ===================================================================== */
+function findPlanSheet(wb){
+  for (const n of wb.SheetNames){
+    const rs = XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:null, raw:true});
+    const h = rs.slice(0,40).findIndex(r => r && r.some(c=>String(c??'').trim().toUpperCase()==='P-CODE') && r.some(c=>String(c??'').trim().toUpperCase()==='PLANNED QTY M01'));
+    if (h >= 0) return {name:n, rows:rs, hdr:h};
+  }
+  return null;
+}
+const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const MONL = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function parsePlan(found, fileName){
+  const {rows, hdr} = found;
+  const titleCell = rows.slice(0,hdr).flat().find(c => c && /production\s*plan/i.test(String(c))) || '';
+  const title = String(titleCell).trim();
+  let mi = -1, yr = null;
+  const mm = title.match(/([A-Za-z]{3})[A-Za-z]*[\s-]+(\d{4})/);
+  if (mm){ mi = MON.indexOf(mm[1].toUpperCase()); yr = +mm[2]; }
+  if (mi < 0){ const f = String(fileName).match(/(\d{4})[-_](\d{2})/); if (f){ yr = +f[1]; mi = +f[2]-1; } }
+  if (mi < 0) throw new Error('Could not read the plan month from the title ("Production Plan for Oct-2026…").');
+  const m1 = MONL[mi] + ' ' + yr, m2 = MONL[(mi+1)%12] + ' ' + (mi===11 ? yr+1 : yr);
+  const U = rows[hdr].map(c=>String(c??'').trim().toUpperCase());
+  const col = k => { const i = U.indexOf(k); if (i<0) throw new Error('Column "' + k + '" not found in the plan.'); return i; };
+  const ic = col('P-CODE'), iname = col('PRODUCT NAME'), ibatch = col('BATCH SIZE'),
+        iq1 = col('PLANNED QTY M01'), ib1 = col('TOTAL BATCH M01'), ic1 = col('COVERAGE M01'), iu1 = col('SC CATEGORY M01'),
+        iq2 = col('PLANNED QTY M02'), ib2 = col('TOTAL BATCH M02'), ic2 = col('COVERAGE M02'), iu2 = col('SC CATEGORY M02');
+  const matrix = (DATA && DATA.matrix) || CONFIG.matrix, idx = brandIndex(matrix);
+  const out = {}; let total = 0;
+  for (let r = hdr+1; r < rows.length; r++){
+    const row = rows[r]; if (!row || row[ic]===null || row[ic]===undefined || String(row[ic]).trim()==='') continue;
+    const code = String(row[ic]).trim(); if (/total/i.test(code)) continue;
+    total++;
+    if (!matchBrand(row[iname], idx)) continue;   // keep Accela brands only
+    out[code] = { name:String(row[iname]||'').trim(), batch:num(row[ibatch]),
+      q1:num(row[iq1])||0, b1:num(row[ib1])||0, c1:num(row[ic1]), u1:String(row[iu1]||'').split(':')[0].trim(),
+      q2:num(row[iq2])||0, b2:num(row[ib2])||0, c2:num(row[ic2]), u2:String(row[iu2]||'').split(':')[0].trim() };
+  }
+  return {meta:{title, m1, m2, sourceFile:fileName, uploadedAt:new Date().toISOString()}, rows:out, info:{total}};
+}
 /* =====================================================================
    ADMIN — parse the daily report
    ===================================================================== */
@@ -733,7 +909,10 @@ async function handleFile(file){
   try{
     const buf = await file.arrayBuffer();
     const wb = XLSX.read(buf, {type:'array'});
+    const planSheet = findPlanSheet(wb);
+    if (planSheet){ handlePlan(planSheet, file.name); return; }
     const p = parseWorkbook(wb);
+    p.kind = 'stock';
     p.meta.uploadedAt = new Date().toISOString(); p.meta.sourceFile = file.name;
     PENDING = p;
     const newSkus = DATA ? p.skus.filter(s=>!DATA.skus.some(d=>d.code===s.code)) : [];
@@ -759,6 +938,31 @@ async function handleFile(file){
   }
 }
 
+function handlePlan(found, fileName){
+  const out = $('#parse-out');
+  const p = parsePlan(found, fileName);
+  p.kind = 'plan'; PENDING = p;
+  const local = DATA ? DATA.skus : [];
+  const inPlan = local.filter(s=>p.rows[s.code]);
+  const missing = local.filter(s=>!p.rows[s.code]);
+  out.innerHTML = `
+    <div class="kv">
+      <div><small>File type</small><b>Production plan</b></div>
+      <div><small>Months</small><b>${esc(p.meta.m1)} &amp; ${esc(p.meta.m2)}</b></div>
+      <div><small>Local Accela SKUs in plan</small><b>${inPlan.length}</b> <span class="muted small">of ${local.length}</span></div>
+    </div>
+    <div class="small muted">${esc(p.meta.title)} · ${p.info.total} SKUs in file · planned in ${esc(p.meta.m1)}: <b>${inPlan.filter(s=>p.rows[s.code].q1>0).length}</b> · in ${esc(p.meta.m2)}: <b>${inPlan.filter(s=>p.rows[s.code].q2>0).length}</b></div>
+    ${missing.length ? `<div class="note" style="margin-top:10px">Shown as “Not in Production Plan”: ${missing.map(s=>esc(s.name)).join('; ')}</div>` : ''}
+    ${DATA ? '' : '<div class="note" style="margin-top:10px">No stock report is published yet, so SKUs cannot be checked. You can still publish.</div>'}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn" id="btn-publish">Publish to portal</button>
+      <button class="btn ghost" id="btn-download">Download data file instead</button>
+    </div>
+    <div id="pub-log"></div>`;
+  $('#btn-publish').onclick = publish;
+  $('#btn-download').onclick = downloadEnc;
+}
+
 /* =====================================================================
    ADMIN — publish to GitHub
    ===================================================================== */
@@ -778,14 +982,17 @@ $('#gh-save').onclick = () => {
   $('#gh-token').value = g.token ? '••••••••••••' : '';
   $('#gh-msg').innerHTML = g.token ? '<span class="ok">Saved ✓</span>' : '<span style="color:var(--red)">No token saved</span>';
 };
-async function buildEnc(){
-  const payload = {meta:PENDING.meta, depots:PENDING.depots, matrix:PENDING.matrix, pms:PENDING.pms, skus:PENDING.skus};
-  return encryptText(TEAM_PW, JSON.stringify(payload));
+function pendingPayload(){
+  return PENDING.kind === 'plan'
+    ? {meta:PENDING.meta, rows:PENDING.rows}
+    : {meta:PENDING.meta, depots:PENDING.depots, matrix:PENDING.matrix, pms:PENDING.pms, skus:PENDING.skus};
 }
+const pendingPath = () => PENDING.kind === 'plan' ? CONFIG.planPath : CONFIG.dataPath;
+async function buildEnc(){ return encryptText(TEAM_PW, JSON.stringify(pendingPayload())); }
 async function downloadEnc(){
   const txt = await buildEnc();
-  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt],{type:'application/octet-stream'})); a.download = 'stock.enc'; a.click();
-  $('#pub-log').innerHTML = '<div class="log">Downloaded <b>stock.enc</b>. Upload it into the <b>data</b> folder of your GitHub repository (replace the old one).</div>';
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt],{type:'application/octet-stream'})); const fn = pendingPath().split('/').pop(); a.download = fn; a.click();
+  $('#pub-log').innerHTML = '<div class="log">Downloaded <b>' + fn + '</b>. Upload it into the <b>data</b> folder of your GitHub repository (replace the old one).</div>';
 }
 async function publish(){
   const log = $('#pub-log'), g = ghSettings();
@@ -794,15 +1001,16 @@ async function publish(){
   log.innerHTML = '<div class="log">Encrypting and publishing…</div>';
   try{
     const txt = await buildEnc();
-    const api = `https://api.github.com/repos/${encodeURIComponent(g.owner)}/${encodeURIComponent(g.repo)}/contents/${CONFIG.dataPath}`;
+    const api = `https://api.github.com/repos/${encodeURIComponent(g.owner)}/${encodeURIComponent(g.repo)}/contents/${pendingPath()}`;
     const headers = {'Authorization':'Bearer ' + g.token, 'Accept':'application/vnd.github+json'};
     let sha;
     const cur = await fetch(api + '?t=' + Date.now(), {headers, cache:'no-store'});
     if (cur.ok) sha = (await cur.json()).sha; else if (cur.status !== 404) throw new Error('GitHub said ' + cur.status + (cur.status===401?' (token is wrong or expired)':''));
-    const res = await fetch(api, {method:'PUT', headers, body: JSON.stringify({message:'Stock report ' + PENDING.meta.reportDate, content: btoa(txt), sha})});
+    const res = await fetch(api, {method:'PUT', headers, body: JSON.stringify({message:(PENDING.kind==='plan' ? 'Production plan ' + PENDING.meta.m1 : 'Stock report ' + PENDING.meta.reportDate), content: btoa(txt), sha})});
     if (!res.ok){ const j = await res.json().catch(()=>({})); throw new Error('GitHub said ' + res.status + ': ' + (j.message||'')); }
-    DATA = JSON.parse(JSON.stringify({meta:PENDING.meta, depots:PENDING.depots, matrix:PENDING.matrix, pms:PENDING.pms, skus:PENDING.skus}));
-    log.innerHTML = `<div class="log"><span class="ok">Published ✓</span> Report ${esc(PENDING.meta.reportDate)} is live. Others will see it within about a minute (they may need to refresh).</div>`;
+    if (PENDING.kind === 'plan') PLAN = JSON.parse(JSON.stringify(pendingPayload())); else DATA = JSON.parse(JSON.stringify(pendingPayload()));
+    const what = PENDING.kind === 'plan' ? 'Production plan ' + PENDING.meta.m1 : 'Report ' + PENDING.meta.reportDate;
+    log.innerHTML = `<div class="log"><span class="ok">Published ✓</span> ${esc(what)} is live. Others will see it within about a minute (they may need to refresh).</div>`;
   } catch(err){
     log.innerHTML = '<div class="log" style="color:var(--red)">' + esc(err.message||err) + '</div>';
   } finally { $('#btn-publish').disabled = false; }
