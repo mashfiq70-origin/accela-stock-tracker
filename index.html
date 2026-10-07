@@ -87,10 +87,13 @@ table.st th:first-child,table.st td:first-child{text-align:left}
 table.st td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:right}
 table.st tr:last-child td{border-bottom:0}
 table.st td.dep{font-weight:700}
+table.st th.dname,table.st td.dname{text-align:left}
+table.st td.dname{color:var(--ink)}
+.dsub{font-weight:500;font-size:11px;color:var(--muted)}
 table.st td.neg{color:var(--red);font-weight:700}
 table.st tr.fg td{background:#f7faf8}
 table.st tr.tot td{background:var(--brand-soft);font-weight:800}
-.rem{display:inline-block;min-width:118px;text-align:center;font-size:12px;font-weight:700;padding:4px 8px;border-radius:999px}
+.rem{display:inline-block;white-space:nowrap;min-width:118px;text-align:center;font-size:12px;font-weight:700;padding:4px 8px;border-radius:999px}
 .rem.g{background:var(--green-bg);color:var(--green)} .rem.y{background:var(--amber-bg);color:var(--amber)} .rem.r{background:var(--red-bg);color:var(--red)} .rem.n{background:var(--grey-bg);color:var(--muted)}
 .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--muted)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
@@ -125,13 +128,16 @@ footer{padding:20px 0 30px;color:var(--muted);font-size:12px;text-align:center}
 
 .t-sm{display:none}
 @media (max-width:600px){
-  .t-lg{display:none} .t-sm{display:inline}
+  .t-lg{display:none} .t-sm{display:inline} .dsub.t-sm{display:block} table.st .dname{display:none}
   .card{padding:14px}
   table.st{min-width:0;font-size:13px}
   table.st th{font-size:10px;padding:8px 5px;letter-spacing:.02em}
   table.st td{padding:7px 5px}
   table.st th:first-child,table.st td:first-child{padding-left:10px}
-  .rem{min-width:0;padding:3px 7px;font-size:10px}
+  .rem{min-width:0;width:12px;height:12px;padding:0;border-radius:50%;vertical-align:middle}
+  .rem .t-sm{display:none}
+  .rem.g{background:var(--green)} .rem.y{background:var(--amber)} .rem.r{background:var(--red)} .rem.n{background:#c9d1cc}
+  table.st td:last-child,table.st th:last-child{padding-right:10px;width:24px}
   .logo span{font-size:13px}
   .top button{padding:6px 9px;font-size:12px}
 }
@@ -416,6 +422,10 @@ function statusOf(s, i){
   return 'g';
 }
 const REM = { g:'ADEQUATE STOCK', y:'NEED ATTENTION', r:'LOW STOCK', n:'NO STOCK / NO SALES' };
+function depotTitle(code){
+  const n = CONFIG.depotNames[code]; if (!n) return code;
+  return n.toLowerCase().replace(/(^|[\s-])([a-z])/g, (m,a,b)=>a+b.toUpperCase());
+}
 const REMS = { g:'OK', y:'WATCH', r:'LOW', n:'–' };
 function redCount(s){ return s.hist ? DATA.depots.reduce((a,_,i)=>a+(statusOf(s,i)==='r'?1:0),0) : 0; }
 
@@ -474,7 +484,7 @@ function renderReport(){
   const body = DATA.depots.map((d,i)=>{
     const c = statusOf(s,i);
     const sh = s.short[i];
-    return `<tr><td class="dep">${esc(d)}</td><td>${fmt(s.stock[i])}</td><td>${fmt(s.cur[i])}</td><td>${s.hist?fmt(s.last[i]):'–'}</td>
+    return `<tr><td class="dep">${esc(d)}<div class="dsub t-sm">${esc(depotTitle(d))}</div></td><td class="dname">${esc(depotTitle(d))}</td><td>${fmt(s.stock[i])}</td><td>${fmt(s.cur[i])}</td><td>${s.hist?fmt(s.last[i]):'–'}</td>
       <td class="${sh<0?'neg':''}">${s.hist?fmt(sh):'–'}</td><td>${c?`<span class="rem ${c}"><span class="t-lg">${REM[c]}</span><span class="t-sm">${REMS[c]}</span></span>`:''}</td></tr>`;
   }).join('');
   $('#report').innerHTML = `
@@ -482,10 +492,10 @@ function renderReport(){
       ${s.hist ? `<span class="chip r">${counts.r} low</span><span class="chip y">${counts.y} attention</span><span class="chip g">${counts.g} adequate</span>` : '<span class="chip n">New SKU · stock only</span>'}</div>
     ${s.hist ? '' : '<div class="note">This SKU has no last-month sales yet, so only stock and current-month sales are shown.</div>'}
     <div class="tablebox"><table class="st">
-      <thead><tr><th>Depot</th><th>Stock</th><th><span class="t-lg">Sales current month</span><span class="t-sm">Sales MTD</span></th><th><span class="t-lg">Sales last month</span><span class="t-sm">Last mo.</span></th><th><span class="t-lg">Probable shortage / excess</span><span class="t-sm">Short / excess</span></th><th><span class="t-lg">Remarks</span><span class="t-sm"></span></th></tr></thead>
+      <thead><tr><th><span class="t-lg">Depot initial</span><span class="t-sm">Depot</span></th><th class="dname">Depot name</th><th>Stock</th><th><span class="t-lg">Sales current month</span><span class="t-sm">Sales MTD</span></th><th><span class="t-lg">Sales last month</span><span class="t-sm">Last mo.</span></th><th><span class="t-lg">Probable shortage / excess</span><span class="t-sm">Short / excess</span></th><th><span class="t-lg">Remarks</span><span class="t-sm"></span></th></tr></thead>
       <tbody>${body}
-        <tr class="fg"><td class="dep">FG STOCK</td><td>${fmt(s.fg)}</td><td></td><td></td><td></td><td></td></tr>
-        <tr class="tot"><td>Total</td><td>${fmt(s.totStock)}</td><td>${fmt(s.totCur)}</td><td>${s.hist?fmt(s.totLast):'–'}</td><td class="${s.totShort<0?'neg':''}">${s.hist?fmt(s.totShort):'–'}</td><td></td></tr>
+        <tr class="fg"><td class="dep">FG STOCK</td><td class="dname">FG Store</td><td>${fmt(s.fg)}</td><td></td><td></td><td></td><td></td></tr>
+        <tr class="tot"><td>Total</td><td class="dname"></td><td>${fmt(s.totStock)}</td><td>${fmt(s.totCur)}</td><td>${s.hist?fmt(s.totLast):'–'}</td><td class="${s.totShort<0?'neg':''}">${s.hist?fmt(s.totShort):'–'}</td><td></td></tr>
       </tbody></table></div>
     <div class="legend"><span><i style="background:var(--green)"></i>Adequate stock</span><span><i style="background:var(--amber)"></i>Need attention</span><span><i style="background:var(--red)"></i>Low stock</span>
       <span>Probable shortage / excess = stock − half of ${esc(DATA.meta.salesOf)} sales (as in the daily report)</span></div>`;
@@ -499,7 +509,7 @@ function skuOptionsHtml(selected){
   const list = skusFor(pm,'');
   return '<option value="">Select SKU</option>' + list.map(s=>`<option value="${esc(s.code)}" ${s.code===selected?'selected':''}>${esc(s.name)}</option>`).join('');
 }
-function depotOptionsHtml(sel, ph){ return '<option value="">' + (ph||'Select') + '</option>' + DATA.depots.map(d=>`<option ${d===sel?'selected':''}>${esc(d)}</option>`).join(''); }
+function depotOptionsHtml(sel, ph){ return '<option value="">' + (ph||'Select') + '</option>' + DATA.depots.map(d=>`<option value="${esc(d)}" ${d===sel?'selected':''}>${esc(d)} – ${esc(depotTitle(d))}</option>`).join(''); }
 function addIdRow(){
   const row = document.createElement('div');
   row.className = 'idrow';
