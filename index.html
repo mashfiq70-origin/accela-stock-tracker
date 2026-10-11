@@ -869,10 +869,9 @@ function renderShip(){
     deps.forEach(d => {
       const ls = byDep[d].slice().sort((a,b)=> b.issue.localeCompare(a.issue) || b.q-a.q);
       const dt = ls.reduce((a,l)=>a+l.q,0), dn = ls[0].dn;
-      const dates = [...new Set(ls.map(l=>l.issue))].map(d => { const [y,m,dd] = d.split('-'); return +dd + ' ' + MONS[(+m)-1]; }).join(', ');
-      trs += `<tr class="dep"><td colspan="6">${esc(dn)}<span class="sub">${esc(d)} · Issued ${esc(dates)}</span></td><td class="n">${fmt(dt)}</td></tr>` +
+      trs += `<tr class="dep"><td colspan="6">${esc(dn)}<span class="sub">${esc(d)}</span></td><td class="n">${fmt(dt)}</td></tr>` +
         ls.map(l => `<tr><td>${esc(fmtD(l.issue))}</td><td><span class="wh">${esc(l.wh)}</span></td><td>${esc(l.uom)}</td><td class="lot">${esc(l.lot)}</td><td>${esc(fmtD(l.exp))}</td><td>${esc(l.veh||'–')}</td><td class="n">${fmt(l.q)}</td></tr>`).join('');
-      cards += `<div class="shdep"><div class="t"><span>${esc(dn)} <span class="muted small">${esc(d)} · Issued ${esc(dates)}</span></span><span>${fmt(dt)}</span></div>` +
+      cards += `<div class="shdep"><div class="t"><span>${esc(dn)} <span class="muted small">${esc(d)}</span></span><span>${fmt(dt)}</span></div>` +
         ls.map(l => `<div class="shline"><div class="l"><b>${esc(fmtD(l.issue))}</b> · ${esc(l.wh)} · Lot ${esc(l.lot)} · Exp ${esc(fmtD(l.exp))}${l.veh?' · '+esc(l.veh):''}</div><div class="q">${fmt(l.q)} ${esc(l.uom)}</div></div>`).join('') + '</div>';
     });
     blocks.push(`<div class="shsku"><div class="h"><span class="code">${esc(s.code)}</span><span class="name">${esc(s.name)}</span>
