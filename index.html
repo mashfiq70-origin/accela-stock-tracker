@@ -150,6 +150,33 @@ table.pp td.nip{text-align:center;color:var(--muted);font-style:italic;backgroun
 .ppc .mo .d{font-size:12px;color:var(--muted);margin:2px 0 6px}
 @media (max-width:700px){ .pptablebox{display:none} .ppcards{display:block} }
 
+/* shipment tracker */
+#v-ship{max-width:1240px}
+.shsku{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;background:var(--card)}
+.shsku .h{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.shsku .h .code{background:var(--grey-bg);border-radius:6px;padding:2px 8px;font-weight:700;font-size:13px}
+.shsku .h .name{font-weight:700;font-size:16px}
+.shsku .h .chip{background:#e8effd;color:#2f5bd3}
+:root[data-theme="dark"] .shsku .h .chip{background:#1b2742;color:#9db8ff}
+table.sh{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px;min-width:880px}
+table.sh th{font-size:11px;padding:8px;text-align:left;border-bottom:1px solid var(--line);background:var(--soft);color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+table.sh td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+table.sh .n{text-align:right}
+table.sh tr.dep td{background:var(--brand-soft);font-weight:700;color:var(--ink)}
+table.sh tr.dep td .sub{font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}
+table.sh td.lot{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--muted)}
+.wh{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--grey-bg);color:var(--muted);white-space:nowrap}
+.shcards{display:none}
+.shdep{border-top:1px solid var(--line);padding:10px 0}
+.shdep:first-child{border-top:0}
+.shdep .t{display:flex;justify-content:space-between;font-weight:700;margin-bottom:6px}
+.shline{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.shline:last-child{border-bottom:0}
+.shline .l{color:var(--muted)} .shline .l b{color:var(--ink);font-weight:600}
+.shline .q{font-weight:800;white-space:nowrap}
+.noship{font-size:13px;color:var(--muted);background:var(--soft);border-radius:10px;padding:10px 12px}
+@media (max-width:700px){ .shtablebox{display:none} .shcards{display:block} }
+
 /* admin */
 .drop{border:2px dashed var(--line-strong);border-radius:14px;padding:28px 16px;text-align:center;background:var(--soft);cursor:pointer}
 .drop.over{border-color:var(--brand);background:var(--brand-soft)}
@@ -266,9 +293,9 @@ footer .by{display:block;margin-top:4px;font-weight:600;letter-spacing:.04em;col
       <button class="tile" id="tile-plan">
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
         <b>Production Plan</b><span id="tile-plan-sub">Planned production this month and next</span></button>
-      <div class="tile soon"><span class="badge">Coming soon</span>
+      <button class="tile" id="tile-ship">
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></div>
-        <b>Shipment Tracker</b><span>Status of shipments to depots</span></div>
+        <b>Shipment Tracker</b><span id="tile-ship-sub">Shipments from FG warehouses to depots</span></button>
       <div class="tile soon"><span class="badge">Coming soon</span>
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="5" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
         <b>Truck Schedule</b><span>Truck dispatch calendar</span></div>
@@ -321,13 +348,26 @@ footer .by{display:block;margin-top:4px;font-weight:600;letter-spacing:.04em;col
     <div style="height:30px"></div>
   </main>
 
+  <!-- SHIPMENT TRACKER -->
+  <main id="v-ship" class="wrap hidden">
+    <div class="pagehead"><div><h1>Shipment Tracker</h1><div class="muted small">Depot-wise shipments from the FG warehouses this month, for Accela SKUs.</div></div></div>
+    <div class="info" id="sh-info"></div>
+    <div class="filters">
+      <div><label class="f" for="sh-pm">Product manager</label><select id="sh-pm"></select></div>
+      <div><label class="f" for="sh-brand">Brand</label><select id="sh-brand"></select></div>
+      <div><label class="f" for="sh-sku">SKU</label><select id="sh-sku"></select></div>
+    </div>
+    <div id="sh-report"></div>
+    <div style="height:30px"></div>
+  </main>
+
   <!-- ADMIN -->
   <main id="v-admin" class="wrap hidden">
     <div class="pagehead"><div><h1>Upload Center</h1><div class="muted small">Upload the morning stock report. Everyone sees the new numbers about a minute after you publish.</div></div></div>
     <div class="card">
       <div class="drop" id="drop">
         <input type="file" id="file" accept=".xlsx,.xls,.xlsm" class="hidden">
-        <div style="font-weight:700;font-size:16px">Drop the stock report or production plan Excel here</div>
+        <div style="font-weight:700;font-size:16px">Drop the stock report, production plan or shipment Excel here</div>
         <div class="muted small">or tap to choose the file — the portal recognises which one it is</div>
       </div>
       <div id="parse-out"></div>
@@ -359,6 +399,7 @@ footer .by{display:block;margin-top:4px;font-weight:600;letter-spacing:.04em;col
 const CONFIG = {
   dataPath: 'data/stock.enc',
   planPath: 'data/plan.enc',
+  shipPath: 'data/ship.enc',
   // Encrypted copy of the team password, unlocked by the admin password.
   adminVault: {"v":1,"iter":200000,"salt":"MvA5ZBkiTM5999lgMY0OKA==","iv":"sNRvyLl1ZZv4tkKy","ct":"+Umj+qilsXHSC4KH/XrJcIigbLJvOH0Hx0yFLdyL0Zg="},
   // Depots in the report that should NOT be shown
@@ -419,6 +460,7 @@ async function decryptText(pw, box){
    ===================================================================== */
 let DATA = null;          // decrypted report
 let PLAN = null;          // decrypted production plan (optional)
+let SHIP = null;          // decrypted shipment report (optional)
 let TEAM_PW = null;       // team password (in memory)
 let ADMIN_OK = false;
 let PENDING = null;       // parsed upload waiting to be published
@@ -429,10 +471,10 @@ document.querySelectorAll('[data-theme-toggle]').forEach(b => b.onclick = () => 
 });
 function show(id){
   ['v-login','v-alogin'].forEach(v => $('#'+v).classList.toggle('hidden', v!==id));
-  const inShell = ['v-home','v-stock','v-plan','v-admin'].includes(id);
+  const inShell = ['v-home','v-stock','v-plan','v-ship','v-admin'].includes(id);
   $('#shell').classList.toggle('hidden', !inShell);
   $('#theme-float').classList.toggle('hidden', inShell);
-  ['v-home','v-stock','v-plan','v-admin'].forEach(v => $('#'+v).classList.toggle('hidden', v!==id));
+  ['v-home','v-stock','v-plan','v-ship','v-admin'].forEach(v => $('#'+v).classList.toggle('hidden', v!==id));
   $('#btn-logout').classList.toggle('hidden', !TEAM_PW);
   window.scrollTo(0,0);
 }
@@ -455,6 +497,11 @@ async function unlock(pw){
     const r = await fetch(CONFIG.planPath + '?t=' + Date.now(), {cache:'no-store'});
     if (r.ok) PLAN = JSON.parse(await decryptText(pw, await r.json()));
   } catch(e) { PLAN = null; }
+  SHIP = null;
+  try {
+    const r = await fetch(CONFIG.shipPath + '?t=' + Date.now(), {cache:'no-store'});
+    if (r.ok) SHIP = JSON.parse(await decryptText(pw, await r.json()));
+  } catch(e) { SHIP = null; }
 }
 
 $('#f-login').addEventListener('submit', async e => {
@@ -465,11 +512,12 @@ $('#f-login').addEventListener('submit', async e => {
 });
 $('#to-admin-login').onclick = () => { show('v-alogin'); $('#apw').focus(); };
 $('#back-login').onclick = () => TEAM_PW ? goHome() : show('v-login');
-$('#btn-logout').onclick = () => { sstore.del('ast_pw'); TEAM_PW=null; DATA=null; PLAN=null; ADMIN_OK=false; $('#pw').value=''; show('v-login'); };
+$('#btn-logout').onclick = () => { sstore.del('ast_pw'); TEAM_PW=null; DATA=null; PLAN=null; SHIP=null; ADMIN_OK=false; $('#pw').value=''; show('v-login'); };
 $('#go-home').onclick = () => goHome();
 $('#btn-admin').onclick = () => ADMIN_OK ? openAdmin() : (show('v-alogin'), $('#apw').focus());
 $('#tile-stock').onclick = () => openStock();
 $('#tile-plan').onclick = () => openPlan();
+$('#tile-ship').onclick = () => openShip();
 
 $('#f-alogin').addEventListener('submit', async e => {
   e.preventDefault();
@@ -489,6 +537,7 @@ $('#f-alogin').addEventListener('submit', async e => {
 function goHome(){
   $('#home-stamp').textContent = DATA ? ('Latest report: ' + DATA.meta.reportDate + '  ·  ' + DATA.skus.length + ' Accela SKUs' + (PLAN ? '  ·  Production plan: ' + PLAN.meta.m1 : '')) : 'No report published yet';
   $('#tile-plan-sub').textContent = PLAN ? (PLAN.meta.m1 + ' & ' + PLAN.meta.m2 + ' plan') : 'No plan uploaded yet';
+  $('#tile-ship-sub').textContent = SHIP ? ('Shipments ' + fmtD(SHIP.meta.from) + ' – ' + fmtD(SHIP.meta.to)) : 'No shipment report uploaded yet';
   show('v-home');
 }
 
@@ -758,6 +807,179 @@ function renderPlan(){
       <div class="legend"><span>Coverage = months of stock expected after this production (from the plan)</span></div>` : '<div class="empty">No SKUs for this selection.</div>'}`;
 }
 
+
+/* =====================================================================
+   SHIPMENT TRACKER
+   ===================================================================== */
+const MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtD(iso){ if (!iso) return '–'; const [y,m,d] = String(iso).split('-'); return (d? +d + ' ' : '') + MONS[(+m)-1] + ' ' + y; }
+function shipItems(pm, brand){
+  // local SKUs (from stock report) + extra items matched by brand only
+  const base = skusFor(pm, brand).map(s=>({key:s.code, code:s.code, name:s.name, brand:s.brand, pm:s.pm}));
+  const extra = Object.entries(SHIP.extra||{}).filter(([k,x]) => (!pm || x.pm===pm) && (!brand || x.brand===brand))
+    .map(([k,x]) => ({key:k, code:k.replace(/^IC:/,''), name:x.name, brand:x.brand, pm:x.pm}));
+  return base.concat(extra);
+}
+function openShip(){
+  if (!DATA){ goHome(); return; }
+  if (!SHIP){
+    $('#sh-info').innerHTML = ''; ['#sh-pm','#sh-brand','#sh-sku'].forEach(x=>$(x).innerHTML='');
+    $('#sh-report').innerHTML = '<div class="card"><div class="empty">No shipment report has been uploaded yet.</div></div>';
+    show('v-ship'); return;
+  }
+  const m = SHIP.meta;
+  $('#sh-info').innerHTML = `
+    <div><small>Shipments from</small><b>${esc(fmtD(m.from))}</b></div>
+    <div><small>Latest updated up to</small><b>${esc(fmtD(m.to))}</b></div>
+    <div><small>Accela shipment lines</small><b>${fmt(SHIP.lines.length)}</b></div>
+    <div><small>Uploaded</small><b>${esc(new Date(m.uploadedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}))}</b></div>`;
+  const pms = DATA.pms.map(p=>p.pm);
+  $('#sh-pm').innerHTML = '<option value="">All product managers</option>' + pms.map(p=>`<option>${esc(p)}</option>`).join('');
+  const saved = store.get('ast_pm'); if (saved && pms.includes(saved)) $('#sh-pm').value = saved;
+  shBrands(); show('v-ship');
+}
+function shBrands(){
+  const brands = [...new Set(shipItems($('#sh-pm').value,'').map(s=>s.brand))].sort();
+  $('#sh-brand').innerHTML = '<option value="">All brands</option>' + brands.map(b=>`<option>${esc(b)}</option>`).join('');
+  shSkus();
+}
+function shSkus(){
+  const list = shipItems($('#sh-pm').value, $('#sh-brand').value);
+  const has = new Set(SHIP.lines.map(l=>l.k));
+  $('#sh-sku').innerHTML = '<option value="">All SKUs (' + list.length + ')</option>' + list.map(s=>`<option value="${esc(s.key)}">${esc(s.name)}${has.has(s.key)?'':'  (no shipment)'}</option>`).join('');
+  renderShip();
+}
+$('#sh-pm').onchange = () => { store.set('ast_pm', $('#sh-pm').value); shBrands(); };
+$('#sh-brand').onchange = shSkus;
+$('#sh-sku').onchange = renderShip;
+function renderShip(){
+  const key = $('#sh-sku').value;
+  let list = shipItems($('#sh-pm').value, $('#sh-brand').value);
+  if (key) list = list.filter(s=>s.key===key);
+  const depOrder = d => { const i = DATA.depots.indexOf(d); return i<0 ? 999 : i; };
+  const blocks = [], none = [];
+  list.forEach(s => {
+    const lines = SHIP.lines.filter(l=>l.k===s.key);
+    if (!lines.length){ none.push(s); return; }
+    const byDep = {};
+    lines.forEach(l => (byDep[l.d] = byDep[l.d] || []).push(l));
+    const deps = Object.keys(byDep).sort((a,b)=>depOrder(a)-depOrder(b) || a.localeCompare(b));
+    const total = lines.reduce((a,l)=>a+l.q,0), tfas = new Set(lines.map(l=>l.tfa)).size;
+    let trs = '', cards = '';
+    deps.forEach(d => {
+      const ls = byDep[d].slice().sort((a,b)=> b.issue.localeCompare(a.issue) || b.q-a.q);
+      const dt = ls.reduce((a,l)=>a+l.q,0), dn = ls[0].dn;
+      trs += `<tr class="dep"><td colspan="7">${esc(dn)}<span class="sub">${esc(d)} · ${ls.length} line${ls.length===1?'':'s'}</span></td><td class="n">${fmt(dt)}</td></tr>` +
+        ls.map(l => `<tr><td>${esc(fmtD(l.issue))}</td><td><span class="wh">${esc(l.wh)}</span></td><td>${esc(l.uom)}</td><td class="lot">${esc(l.lot)}</td><td>${esc(fmtD(l.exp))}</td><td>${esc(l.veh||'–')}</td><td class="lot">${esc(l.tfa)}</td><td class="n">${fmt(l.q)}</td></tr>`).join('');
+      cards += `<div class="shdep"><div class="t"><span>${esc(dn)} <span class="muted small">${esc(d)}</span></span><span>${fmt(dt)}</span></div>` +
+        ls.map(l => `<div class="shline"><div class="l"><b>${esc(fmtD(l.issue))}</b> · ${esc(l.wh)} · Lot ${esc(l.lot)} · Exp ${esc(fmtD(l.exp))}${l.veh?' · '+esc(l.veh):''}</div><div class="q">${fmt(l.q)} ${esc(l.uom)}</div></div>`).join('') + '</div>';
+    });
+    blocks.push(`<div class="shsku"><div class="h"><span class="code">${esc(s.code)}</span><span class="name">${esc(s.name)}</span>
+        <span class="chip">${tfas} shipment${tfas===1?'':'s'}</span><span class="chip">${fmt(total)} units</span><span class="chip">${deps.length} depot${deps.length===1?'':'s'}</span></div>
+      <div class="tablebox shtablebox"><table class="sh"><thead><tr><th>Issue date</th><th>Warehouse</th><th>UOM</th><th>Lot no</th><th>Expiry date</th><th>Vehicle no</th><th>TFA no</th><th class="n">Shipped qty</th></tr></thead>
+      <tbody>${trs}</tbody></table></div><div class="shcards">${cards}</div></div>`);
+  });
+  $('#sh-report').innerHTML = (blocks.length ? blocks.join('') : '<div class="card"><div class="empty">No shipments this month for this selection.</div></div>') +
+    (none.length && blocks.length ? `<div class="noship">No shipment yet this month: ${none.map(s=>esc(s.name)).join(' · ')}</div>` : '');
+}
+
+/* =====================================================================
+   ADMIN — parse the shipment report
+   ===================================================================== */
+function findShipSheet(wb){
+  for (const n of wb.SheetNames){
+    const rs = XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:null, raw:true});
+    const h = rs.slice(0,30).findIndex(r => r && r.some(c=>String(c??'').trim().toUpperCase()==='TFA NO') && r.some(c=>String(c??'').trim().toUpperCase()==='SHIPPED QUANTITY'));
+    if (h >= 0) return {name:n, rows:rs, hdr:h};
+  }
+  return null;
+}
+function xlDate(v){
+  if (v===null || v===undefined || v==='') return '';
+  if (v instanceof Date) return v.toISOString().slice(0,10);
+  if (typeof v === 'number'){ const d = new Date(Math.round((v - 25569) * 86400000)); return d.toISOString().slice(0,10); }
+  const s = String(v).trim(); let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return m[0];
+  m = s.match(/^(\d{1,2})[-\/ ]([A-Za-z]{3})[A-Za-z]*[-\/ ](\d{2,4})/);
+  if (m){ const mi = MONS.findIndex(x=>x.toUpperCase()===m[2].toUpperCase()); const y = m[3].length===2 ? '20'+m[3] : m[3]; if (mi>=0) return `${y}-${String(mi+1).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`; }
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); if (m) return `${m[3]}-${String(+m[2]).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`;
+  return '';
+}
+const cleanTxt = v => String(v ?? '').replace(/[​-‏‪-‮⁦-⁩﻿]/g,'').trim();
+function shortWh(n){
+  const s = cleanTxt(n); let m = s.match(/Warehouse-?\s*(\d+)\s*\(([^)\s]+)/i);
+  if (m) return 'FG-' + m[1] + ' ' + m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase();
+  return s.replace(/\s*(PLC|Limited|Ltd\.?)$/i,'');
+}
+function depotFromName(n){
+  const s = cleanTxt(n);
+  const stem = s.replace(/\s*Depot.*$/i,'').trim();
+  const up = stem.toUpperCase();
+  const code = Object.keys(CONFIG.depotNames).find(c => CONFIG.depotNames[c].toUpperCase() === up);
+  return {code: code || stem, name: code ? depotTitle(code) : stem};
+}
+function parseShip(found, wb, fileName){
+  const {rows, hdr} = found;
+  const U = rows[hdr].map(c=>String(c??'').trim().toUpperCase());
+  const col = k => { const i = U.indexOf(k); if (i<0) throw new Error('Column "' + k + '" not found in the shipment file.'); return i; };
+  const iD = col('ISSUE DATE'), iT = col('TFA NO'), iF = col('FROM ORG NAME'), iTo = col('TO ORG NAME'), iI = col('ITEM CODE'), iN = col('ITEM NAME'),
+        iU = col('UOM'), iL = col('LOT NO'), iE = col('EXPIRY DATE'), iV = col('VEHICLE NO'), iQ = col('SHIPPED QUANTITY');
+  // item code -> local SKU code, via the production plan
+  const local = new Set((DATA ? DATA.skus : []).map(s=>s.code));
+  const ic2code = {}, planOther = new Set(); let planHasIc = false;
+  if (PLAN) Object.entries(PLAN.rows).forEach(([c,r]) => { if (r.ic){ planHasIc = true; if (local.has(c)) ic2code[r.ic] = c; else planOther.add(r.ic); } });
+  const matrix = (DATA && DATA.matrix) || CONFIG.matrix, idx = brandIndex(matrix);
+  const lines = [], extra = {}; let total = 0, ps = 0, minD = '', maxD = '';
+  for (let r = hdr+1; r < rows.length; r++){
+    const row = rows[r]; if (!row || row[iI]===null || row[iI]===undefined || cleanTxt(row[iI])==='') continue;
+    total++;
+    const toName = cleanTxt(row[iTo]);
+    if (/-\s*PS\b/i.test(toName)){ ps++; continue; }
+    const ic = cleanTxt(row[iI]).replace(/\D/g,''), name = cleanTxt(row[iN]);
+    let k = ic2code[ic];
+    if (!k && planOther.has(ic)) continue;   // export / sample / vet version of an Accela brand
+    if (!k){
+      const mb = matchBrand(name, idx); if (!mb) continue;
+      k = 'IC:' + ic;
+      if (!extra[k]) extra[k] = {name, brand: mb.brand, pm: mb.pm};
+    }
+    const issue = xlDate(row[iD]), dep = depotFromName(toName);
+    if (issue){ if (!minD || issue < minD) minD = issue; if (!maxD || issue > maxD) maxD = issue; }
+    lines.push({k, d:dep.code, dn:dep.name, wh:shortWh(row[iF]), uom:cleanTxt(row[iU]), lot:cleanTxt(row[iL]), issue, exp:xlDate(row[iE]),
+      veh:cleanTxt(row[iV]), tfa:cleanTxt(row[iT]), q:num(row[iQ])||0});
+  }
+  // report period from a "From : 01-OCT-26 To : 10-OCT-26" header, if present
+  let from = minD, to = maxD;
+  for (const n of wb.SheetNames){
+    const rs = XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:null, raw:true}).slice(0,10);
+    const cell = rs.flat().find(c => c && /From\s*:.*To\s*:/i.test(String(c)));
+    if (cell){ const m = String(cell).replace(/ /g,' ').match(/From\s*:\s*(\S+)\s*To\s*:\s*(\S+)/i); if (m){ from = xlDate(m[1]) || from; to = xlDate(m[2]) || to; } break; }
+  }
+  return {meta:{from, to, sourceFile:fileName, uploadedAt:new Date().toISOString()}, lines, extra, info:{total, ps, planHasIc}};
+}
+function handleShip(found, wb, fileName){
+  const out = $('#parse-out');
+  const p = parseShip(found, wb, fileName);
+  p.kind = 'ship'; PENDING = p;
+  const skuN = new Set(p.lines.map(l=>l.k)).size, units = p.lines.reduce((a,l)=>a+l.q,0);
+  const extras = Object.values(p.extra);
+  out.innerHTML = `
+    <div class="kv">
+      <div><small>File type</small><b>Shipment report</b></div>
+      <div><small>Period</small><b>${esc(fmtD(p.meta.from))} – ${esc(fmtD(p.meta.to))}</b></div>
+      <div><small>Accela lines</small><b>${fmt(p.lines.length)}</b> <span class="muted small">of ${fmt(p.info.total)}</span></div>
+    </div>
+    <div class="small muted">${skuN} Accela SKUs shipped · ${fmt(units)} units · ${p.info.ps} sample-depot (PS) lines dropped</div>
+    ${!PLAN ? '<div class="note" style="margin-top:10px">No production plan is uploaded, so SKUs are matched by brand name only. Upload the plan first for exact matching.</div>' :
+      (!p.info.planHasIc ? '<div class="note" style="margin-top:10px">The published production plan is from an older version of the portal. Please upload the plan Excel once more so shipments can be matched to SKU codes exactly.</div>' : '')}
+    ${extras.length ? `<div class="note" style="margin-top:10px">Matched by brand name (not found in the plan): ${extras.map(x=>esc(x.name)+' → '+esc(x.pm)).join('; ')}</div>` : ''}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn" id="btn-publish">Publish to portal</button>
+      <button class="btn ghost" id="btn-download">Download data file instead</button>
+    </div>
+    <div id="pub-log"></div>`;
+  $('#btn-publish').onclick = publish;
+  $('#btn-download').onclick = downloadEnc;
+}
 /* =====================================================================
    ADMIN — parse the production plan
    ===================================================================== */
@@ -783,6 +1005,7 @@ function parsePlan(found, fileName){
   const m1 = MONL[mi] + ' ' + yr, m2 = MONL[(mi+1)%12] + ' ' + (mi===11 ? yr+1 : yr);
   const U = rows[hdr].map(c=>String(c??'').trim().toUpperCase());
   const col = k => { const i = U.indexOf(k); if (i<0) throw new Error('Column "' + k + '" not found in the plan.'); return i; };
+  const iitem = U.indexOf('ITEM CODE');
   const ic = col('P-CODE'), iname = col('PRODUCT NAME'), ibatch = col('BATCH SIZE'),
         iq1 = col('PLANNED QTY M01'), ib1 = col('TOTAL BATCH M01'), ic1 = col('COVERAGE M01'), iu1 = col('SC CATEGORY M01'),
         iq2 = col('PLANNED QTY M02'), ib2 = col('TOTAL BATCH M02'), ic2 = col('COVERAGE M02'), iu2 = col('SC CATEGORY M02');
@@ -793,7 +1016,7 @@ function parsePlan(found, fileName){
     const code = String(row[ic]).trim(); if (/total/i.test(code)) continue;
     total++;
     if (!matchBrand(row[iname], idx)) continue;   // keep Accela brands only
-    out[code] = { name:String(row[iname]||'').trim(), batch:num(row[ibatch]),
+    out[code] = { name:String(row[iname]||'').trim(), ic: iitem>=0 ? String(row[iitem]??'').replace(/\D/g,'') : '', batch:num(row[ibatch]),
       q1:num(row[iq1])||0, b1:num(row[ib1])||0, c1:num(row[ic1]), u1:String(row[iu1]||'').split(':')[0].trim(),
       q2:num(row[iq2])||0, b2:num(row[ib2])||0, c2:num(row[ic2]), u2:String(row[iu2]||'').split(':')[0].trim() };
   }
@@ -939,6 +1162,8 @@ async function handleFile(file){
     const wb = XLSX.read(buf, {type:'array'});
     const planSheet = findPlanSheet(wb);
     if (planSheet){ handlePlan(planSheet, file.name); return; }
+    const shipSheet = findShipSheet(wb);
+    if (shipSheet){ handleShip(shipSheet, wb, file.name); return; }
     const p = parseWorkbook(wb);
     p.kind = 'stock';
     p.meta.uploadedAt = new Date().toISOString(); p.meta.sourceFile = file.name;
@@ -1011,11 +1236,12 @@ $('#gh-save').onclick = () => {
   $('#gh-msg').innerHTML = g.token ? '<span class="ok">Saved ✓</span>' : '<span style="color:var(--red)">No token saved</span>';
 };
 function pendingPayload(){
-  return PENDING.kind === 'plan'
-    ? {meta:PENDING.meta, rows:PENDING.rows}
-    : {meta:PENDING.meta, depots:PENDING.depots, matrix:PENDING.matrix, pms:PENDING.pms, skus:PENDING.skus};
+  if (PENDING.kind === 'plan') return {meta:PENDING.meta, rows:PENDING.rows};
+  if (PENDING.kind === 'ship') return {meta:PENDING.meta, lines:PENDING.lines, extra:PENDING.extra};
+  return {meta:PENDING.meta, depots:PENDING.depots, matrix:PENDING.matrix, pms:PENDING.pms, skus:PENDING.skus};
 }
-const pendingPath = () => PENDING.kind === 'plan' ? CONFIG.planPath : CONFIG.dataPath;
+const pendingPath = () => PENDING.kind === 'plan' ? CONFIG.planPath : PENDING.kind === 'ship' ? CONFIG.shipPath : CONFIG.dataPath;
+const pendingLabel = () => PENDING.kind === 'plan' ? 'Production plan ' + PENDING.meta.m1 : PENDING.kind === 'ship' ? 'Shipment report up to ' + fmtD(PENDING.meta.to) : 'Stock report ' + PENDING.meta.reportDate;
 async function buildEnc(){ return encryptText(TEAM_PW, JSON.stringify(pendingPayload())); }
 async function downloadEnc(){
   const txt = await buildEnc();
@@ -1034,10 +1260,11 @@ async function publish(){
     let sha;
     const cur = await fetch(api + '?t=' + Date.now(), {headers, cache:'no-store'});
     if (cur.ok) sha = (await cur.json()).sha; else if (cur.status !== 404) throw new Error('GitHub said ' + cur.status + (cur.status===401?' (token is wrong or expired)':''));
-    const res = await fetch(api, {method:'PUT', headers, body: JSON.stringify({message:(PENDING.kind==='plan' ? 'Production plan ' + PENDING.meta.m1 : 'Stock report ' + PENDING.meta.reportDate), content: btoa(txt), sha})});
+    const res = await fetch(api, {method:'PUT', headers, body: JSON.stringify({message:pendingLabel(), content: btoa(txt), sha})});
     if (!res.ok){ const j = await res.json().catch(()=>({})); throw new Error('GitHub said ' + res.status + ': ' + (j.message||'')); }
-    if (PENDING.kind === 'plan') PLAN = JSON.parse(JSON.stringify(pendingPayload())); else DATA = JSON.parse(JSON.stringify(pendingPayload()));
-    const what = PENDING.kind === 'plan' ? 'Production plan ' + PENDING.meta.m1 : 'Report ' + PENDING.meta.reportDate;
+    const copy = JSON.parse(JSON.stringify(pendingPayload()));
+    if (PENDING.kind === 'plan') PLAN = copy; else if (PENDING.kind === 'ship') SHIP = copy; else DATA = copy;
+    const what = pendingLabel();
     log.innerHTML = `<div class="log"><span class="ok">Published ✓</span> ${esc(what)} is live. Others will see it within about a minute (they may need to refresh).</div>`;
   } catch(err){
     log.innerHTML = '<div class="log" style="color:var(--red)">' + esc(err.message||err) + '</div>';
