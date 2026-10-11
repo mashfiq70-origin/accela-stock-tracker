@@ -869,14 +869,15 @@ function renderShip(){
     deps.forEach(d => {
       const ls = byDep[d].slice().sort((a,b)=> b.issue.localeCompare(a.issue) || b.q-a.q);
       const dt = ls.reduce((a,l)=>a+l.q,0), dn = ls[0].dn;
-      trs += `<tr class="dep"><td colspan="7">${esc(dn)}<span class="sub">${esc(d)} · ${ls.length} line${ls.length===1?'':'s'}</span></td><td class="n">${fmt(dt)}</td></tr>` +
-        ls.map(l => `<tr><td>${esc(fmtD(l.issue))}</td><td><span class="wh">${esc(l.wh)}</span></td><td>${esc(l.uom)}</td><td class="lot">${esc(l.lot)}</td><td>${esc(fmtD(l.exp))}</td><td>${esc(l.veh||'–')}</td><td class="lot">${esc(l.tfa)}</td><td class="n">${fmt(l.q)}</td></tr>`).join('');
-      cards += `<div class="shdep"><div class="t"><span>${esc(dn)} <span class="muted small">${esc(d)}</span></span><span>${fmt(dt)}</span></div>` +
+      const dates = [...new Set(ls.map(l=>l.issue))].map(d => { const [y,m,dd] = d.split('-'); return +dd + ' ' + MONS[(+m)-1]; }).join(', ');
+      trs += `<tr class="dep"><td colspan="6">${esc(dn)}<span class="sub">${esc(d)} · Issued ${esc(dates)}</span></td><td class="n">${fmt(dt)}</td></tr>` +
+        ls.map(l => `<tr><td>${esc(fmtD(l.issue))}</td><td><span class="wh">${esc(l.wh)}</span></td><td>${esc(l.uom)}</td><td class="lot">${esc(l.lot)}</td><td>${esc(fmtD(l.exp))}</td><td>${esc(l.veh||'–')}</td><td class="n">${fmt(l.q)}</td></tr>`).join('');
+      cards += `<div class="shdep"><div class="t"><span>${esc(dn)} <span class="muted small">${esc(d)} · Issued ${esc(dates)}</span></span><span>${fmt(dt)}</span></div>` +
         ls.map(l => `<div class="shline"><div class="l"><b>${esc(fmtD(l.issue))}</b> · ${esc(l.wh)} · Lot ${esc(l.lot)} · Exp ${esc(fmtD(l.exp))}${l.veh?' · '+esc(l.veh):''}</div><div class="q">${fmt(l.q)} ${esc(l.uom)}</div></div>`).join('') + '</div>';
     });
     blocks.push(`<div class="shsku"><div class="h"><span class="code">${esc(s.code)}</span><span class="name">${esc(s.name)}</span>
         <span class="chip">${tfas} shipment${tfas===1?'':'s'}</span><span class="chip">${fmt(total)} units</span><span class="chip">${deps.length} depot${deps.length===1?'':'s'}</span></div>
-      <div class="tablebox shtablebox"><table class="sh"><thead><tr><th>Issue date</th><th>Warehouse</th><th>UOM</th><th>Lot no</th><th>Expiry date</th><th>Vehicle no</th><th>TFA no</th><th class="n">Shipped qty</th></tr></thead>
+      <div class="tablebox shtablebox"><table class="sh"><thead><tr><th>Issue date</th><th>Warehouse</th><th>UOM</th><th>Lot no</th><th>Expiry date</th><th>Vehicle no</th><th class="n">Shipped qty</th></tr></thead>
       <tbody>${trs}</tbody></table></div><div class="shcards">${cards}</div></div>`);
   });
   $('#sh-report').innerHTML = (blocks.length ? blocks.join('') : '<div class="card"><div class="empty">No shipments this month for this selection.</div></div>') +
