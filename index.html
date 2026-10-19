@@ -1417,7 +1417,7 @@ async function publish(){
   if (!window.crypto || !crypto.subtle){ document.body.innerHTML = '<p style="padding:20px">Please open this page over https (the GitHub link).</p>'; return; }
   const pw = sstore.get('ast_pw');
   if (pw){ try { await unlock(pw); goHome(); return; } catch(e){ sstore.del('ast_pw'); } }
-  show('v-splash'); $('#splash-go').focus();
+  show('v-splash');
 })();
 </script>
 </body>
