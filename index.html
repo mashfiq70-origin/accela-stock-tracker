@@ -7,7 +7,7 @@
 <title>Accela Stock Tracker</title>
 <script>(function(){var t=null;try{t=localStorage.getItem("ast_theme")}catch(e){}if(!t){t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -253,7 +253,7 @@ footer .by{display:block;margin-top:4px;font-weight:600;letter-spacing:.04em;col
 .splash .b2{width:520px;height:520px;background:#c058d6;bottom:-200px;right:-160px;animation-delay:-5s;opacity:.35}
 .splash .b3{width:300px;height:300px;background:#4f7cff;top:40%;left:60%;animation-delay:-9s;opacity:.3}
 @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-24px) scale(1.06)}}
-.splash .inner{position:relative;text-align:center;max-width:680px}
+.splash .inner{position:relative;text-align:center;max-width:960px}
 .splash .logo{width:84px;height:84px;margin:0 auto 22px;border-radius:22px;background:#fff;color:#5b3fa0;display:grid;place-items:center;font-size:42px;font-weight:800;box-shadow:0 18px 50px rgba(20,8,50,.45);animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
 .splash .eyebrow{font-size:12px;font-weight:700;letter-spacing:.22em;color:#cdbcff;animation:up .7s .15s both}
 .splash h1{font-size:clamp(38px,7vw,64px);line-height:1.02;letter-spacing:-.025em;margin:14px 0 0;font-weight:800;animation:up .7s .25s both}
@@ -316,6 +316,13 @@ footer .by{display:block;margin-top:4px;font-weight:600;letter-spacing:.04em;col
   .login2 .side .brandrow{padding-right:52px}
   .login2 .main{padding:26px 20px 40px;place-items:start center}
 }
+
+/* portal name font */
+.pname,.splash h1,.logo span,.login2 .side .brandrow{font-family:'Orbitron',Inter,system-ui,sans-serif}
+.splash h1{font-weight:800;font-size:clamp(30px,6.2vw,60px);letter-spacing:.01em;line-height:1.08}
+.logo span{font-weight:700;letter-spacing:.06em}
+.login2 .side .brandrow{font-weight:700;letter-spacing:.07em}
+.login2 .side .brandrow .m,.logo .mark{font-family:Inter,system-ui,sans-serif;letter-spacing:0}
 /* ---- portal colour theme: Royal Purple ---- */
 :root{--bg:#f5f3f9;--ink:#1e1633;--muted:#6a6280;--line:#e3dfec;--brand:#5b3fa0;--brand-2:#6c4fbd;--brand-soft:#efeafa;--soft:#f8f6fc;--line-strong:#c7bddc;--faint:#aaa3bd;--glow:#ddd3f3;--topbar:linear-gradient(90deg,#33235f 0%,#5b3fa0 60%,#7a52c7 100%)}
 :root[data-theme="dark"]{--bg:#110e1a;--card:#1a1526;--ink:#e8e3f3;--muted:#a097b5;--line:#2c2540;--brand:#8a6ee6;--brand-2:#a48cf0;--brand-soft:#241c3a;--soft:#1e1830;--line-strong:#3d3456;--faint:#5f5675;--glow:#1f1636;--topbar:linear-gradient(90deg,#1f1538 0%,#3d2a73 100%)}
